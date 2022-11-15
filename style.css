@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+p,
+body {
+  margin: 0;
+}
+
+button,
+button:disabled {
+  color: inherit;
+  background-color: inherit;
+  border: none;
+}
+
+.app {
+  padding: 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.btn {
+  padding: 8px 12px;
+  text-transform: uppercase;
+  border: 1px solid black;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.field > label {
+  font-size: 16px;
+}
+
+.field > input {
+  padding: 12px 8px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+.btn:disabled {
+  border: 1px solid gray;
+  color: gray;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):hover {
+  filter: opacity(0.8);
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.board > .row {
+  display: flex;
+  gap: 4px;
+}
+
+.board > .row > .cell {
+  width: 75px;
+  height: 75px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 8px;
+  border: 1px solid black;
+  background: black;
+  box-shadow: unset;
+  font-size: 26px;
+}
+
+.board > .row > .cell.-seleced {
+  color: white;
+}
+
+.board > .row > .cell.-matched {
+  color: lightgreen;
+}
+
+.board > .row > .cell:not(:disabled):hover {
+  filter: opacity(0.8);
+}
