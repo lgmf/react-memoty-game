@@ -7,3 +7,7 @@ export function getRandomNumber(max: number) {
 export function createUUID() {
   return uuidv4();
 }
+
+export function flatten<T>(arr: T[][]): T[] {
+  return arr.reduce((acc, curr) => [...acc, ...curr], [] as T[]);
+}

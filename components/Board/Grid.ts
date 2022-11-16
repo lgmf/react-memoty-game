@@ -5,18 +5,16 @@ type Coordinates = Array<[number, number]>;
 export interface Cell {
   id: string;
   value: number;
-  matched: boolean;
-  selected: boolean;
+  label: string;
 }
 
 export type Grid = Array<Array<Cell>>;
 
-function createCell(value: number): Cell {
+function createCell(value: number, label: string): Cell {
   return {
     id: createUUID(),
     value,
-    matched: false,
-    selected: false,
+    label,
   };
 }
 
@@ -38,7 +36,7 @@ function createEmptyGrid(size: number): Grid {
   for (let i = 0; i < size; i++) {
     grid[i] = [];
     for (let j = 0; j < size; j++) {
-      grid[i][j] = createCell(-1);
+      grid[i][j] = createCell(-1, '-1');
     }
   }
 
@@ -78,6 +76,7 @@ export function createGrid(size: number): Grid {
         const cell = grid[rowIndex][cellIndex];
 
         cell.value = cellValue;
+        cell.label = cellValue.toString();
         coordinates.splice(randomCoordinateIndex, 1);
         count += 1;
       }

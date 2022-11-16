@@ -66,12 +66,18 @@ button:disabled {
   gap: 8px;
 }
 
-.board > .row {
+.card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-grid > .row {
   display: flex;
   gap: 4px;
 }
 
-.board > .row > .cell {
+.card-grid > .row > .cell {
   width: 75px;
   height: 75px;
   padding: 8px 12px;
@@ -84,14 +90,14 @@ button:disabled {
   font-size: 26px;
 }
 
-.board > .row > .cell.-seleced {
+.card-grid > .row > .cell.-opened {
   color: white;
 }
 
-.board > .row > .cell.-matched {
+.card-grid > .row > .cell.-found {
   color: lightgreen;
 }
 
-.board > .row > .cell:not(:disabled):hover {
+.card-grid > .row > .cell:not(:disabled):hover {
   filter: opacity(0.8);
 }
