@@ -1,118 +1,59 @@
 import * as React from 'react';
-import { clsx } from 'clsx';
 
-import { Grid, createGrid, Cell, calculateTotalPairs } from './Grid';
+import { Cell, calculateTotalPairs } from './Grid';
+import CardGrid from './CardGrid';
+import { useBoard } from './State';
 
 interface BoardProps {
   gridSize: number;
 }
 
 function Board({ gridSize: size }: BoardProps) {
-  const [selected, setSelected] = React.useState<Cell[]>([]);
-  const [grid, setGrid] = React.useState<Grid>(createGrid(size));
+  const [state, dispatch] = useBoard(size);
 
-  const answeredCount = React.useMemo(() => {
-    return grid
-      .reduce((acc, curr) => [...acc, ...curr], [])
-      .reduce((acc, curr) => (curr.matched ? acc + 1 : acc), 0);
-  }, [grid]);
+  const { grid, opened, foundCellIds } = state;
 
-  const selectedMap = selected.reduce(
-    (acc, cell) => ({ ...acc, [cell.id]: cell }),
-    {} as Record<string, Cell>
-  );
-
-  const foundPairs = answeredCount / 2;
-
+  const totalFoundPairs = foundCellIds.length / 2;
   const totalPairs = calculateTotalPairs(size);
-
-  const isFinished = foundPairs === totalPairs;
-
-  const isFull = selected.length === 2;
-
-  function selectCell(cell: Cell) {
-    if (isFull) {
-      return;
-    }
-
-    setSelected([...selected, cell]);
-  }
+  const isFinished = totalFoundPairs === totalPairs;
+  const isMaxOpenedCards = opened.length === 2;
 
   function resetGame() {
-    setGrid(createGrid(size));
+    dispatch({ type: 'RESET_BOARD', payload: { newGridSize: size } });
+  }
+
+  function openCell(cell: Cell) {
+    dispatch({ type: 'OPEN_CELL', payload: cell });
   }
 
   React.useEffect(() => {
-    let timeoutId: number | undefined;
-
-    if (isFull) {
-      const [first, second] = selected;
+    if (isMaxOpenedCards) {
+      const [first, second] = opened;
 
       if (first.value === second.value) {
-        setGrid((prevGrid) =>
-          prevGrid.map((row) =>
-            row.map((col) => {
-              if (col.id === first.id || col.id === second.id) {
-                return { ...col, matched: true };
-              }
-
-              return col;
-            })
-          )
-        );
-        setSelected([]);
+        dispatch({ type: 'FOUND_PAIR', payload: [first.id, second.id] });
       } else {
-        timeoutId = setTimeout(() => {
-          setSelected([]);
+        setTimeout(() => {
+          dispatch({ type: 'CLEAR_OPENED_CELLS' });
         }, 1000);
       }
     }
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isFull]);
-
-  React.useEffect(() => {
-    setGrid(createGrid(size));
-    setSelected([]);
-  }, [size]);
+  }, [isMaxOpenedCards]);
 
   return (
     <div className="board">
       <p>
-        Score: {foundPairs} / {totalPairs}
+        Score: {totalFoundPairs} / {totalPairs}
       </p>
 
-      {grid.map((row, rowIndex) => (
-        <div key={rowIndex} className="row">
-          {row.map((cell) => {
-            const isSelected = Boolean(selectedMap[cell.id]);
-
-            const canShowValue = isFinished || isSelected || cell.matched;
-
-            const isDisabled =
-              isFinished || isFull || isSelected || cell.matched;
-
-            const className = clsx({
-              cell: true,
-              '-seleced': isSelected,
-              '-matched': cell.matched,
-            });
-
-            return (
-              <button
-                key={cell.id}
-                disabled={isDisabled}
-                className={className}
-                onClick={() => selectCell(cell)}
-              >
-                {canShowValue ? cell.value : ''}
-              </button>
-            );
-          })}
-        </div>
-      ))}
+      <CardGrid
+        grid={grid}
+        foundCellIds={foundCellIds}
+        opened={opened}
+        isFinished={isFinished}
+        isMaxOpenedCards={isMaxOpenedCards}
+        onClick={openCell}
+      />
 
       <div className="actions">
         <button className="btn" onClick={resetGame}>

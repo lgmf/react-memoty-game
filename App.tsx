@@ -4,7 +4,7 @@ import './style.css';
 import Board from './components/Board';
 
 export default function App() {
-  const [gridSize, setGridSize] = React.useState<number>(4);
+  const [gridSize, setGridSize] = React.useState<number>(2);
 
   return (
     <div className="app">
