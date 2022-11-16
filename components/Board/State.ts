@@ -7,6 +7,7 @@ interface BoardState {
   opened: Cell[];
   foundCellIds: string[];
   grid: Grid;
+  attempts: number;
 }
 
 interface Action {
@@ -44,7 +45,8 @@ function createInitialState(size: number): BoardState {
   return {
     opened: [],
     foundCellIds: [],
-    grid: createGrid(size)
+    grid: createGrid(size),
+    attempts: 0,
   };
 }
 
@@ -56,13 +58,16 @@ function reducer(draftState: BoardState, action: BoardAction) {
     case 'FOUND_PAIR':
       draftState.opened = [];
       draftState.foundCellIds.push(...action.payload);
+      draftState.attempts += 1;
       break;
     case 'CLEAR_OPENED_CELLS':
       draftState.opened = [];
+      draftState.attempts += 1;
       break;
     case 'RESET_BOARD':
       draftState.opened = [];
       draftState.foundCellIds = [];
+      draftState.attempts = 0;
       draftState.grid = createGrid(action.payload.newGridSize);
       break;
     default:

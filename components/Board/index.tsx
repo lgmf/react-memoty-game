@@ -11,7 +11,7 @@ interface BoardProps {
 function Board({ gridSize: size }: BoardProps) {
   const [state, dispatch] = useBoard(size);
 
-  const { grid, opened, foundCellIds } = state;
+  const { grid, opened, foundCellIds, attempts } = state;
 
   const totalFoundPairs = foundCellIds.length / 2;
   const totalPairs = calculateTotalPairs(size);
@@ -45,6 +45,8 @@ function Board({ gridSize: size }: BoardProps) {
       <p>
         Score: {totalFoundPairs} / {totalPairs}
       </p>
+
+      <p>Attempts: {attempts}</p>
 
       <CardGrid
         grid={grid}
